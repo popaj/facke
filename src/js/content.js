@@ -1,7 +1,10 @@
 'use strict';
 
 const SLUG_REGEX = /\/+[a-z0-9-]+\.\d+/;
-const DEBUG = false;
+const DEBUG = true;
+const SPACE = " ";
+const COMMA = ",";
+const DEFAULT_AUTHOR_PHOTO = browser.runtime.getURL("src/asset/photo/default.jpg");
 
 // SENDER
 browser.runtime.sendMessage({action: "getAuthors", host: window.location.host}, (response) => {
@@ -50,35 +53,59 @@ function getAuthorLinkElement(href, linkText, target) {
 
 function getAuthorPhotoElement(imgSrc) {
     let img = document.createElement("img");
-    img.src = imgSrc;
-    img.setAttribute("style", "width: 100px;");
+    if (imgSrc) {
+        img.src = imgSrc;
+    } else {
+        img.src = DEFAULT_AUTHOR_PHOTO
+    }
+    img.setAttribute("style", "object-fit: cover; width: 100px; height: 100px; border-radius: 50px;");
     return img;
 }
 
-function matchAuthor(authors) {
-    let articleAuthor = document.querySelector("span.metainfo__item--author").textContent
-    const multipleAuthors = articleAuthor.indexOf(",") > 0
-    if (multipleAuthors) {
-        // TODO: fix: list all
-        articleAuthor = articleAuthor.substring(0, articleAuthor.indexOf(","))
-        DEBUG ? console.log("news article author", articleAuthor) : undefined;
+function getArticleAuthors() {
+    let authors = []
+    let articleAuthors = document.querySelector("span.metainfo__item--author").textContent
+    if (articleAuthors.includes(COMMA)) {
+        const authorParts = articleAuthors.split(COMMA)
+        for (let i = 0; i < authorParts.length; i++) {
+            const currentAuthor = authorParts[i].trim();
+            const isName = currentAuthor.includes(SPACE);
+            if (isName) {
+                authors.push(currentAuthor);
+            }
+        }
+    } else {
+        // single author
+        authors.push(articleAuthors);
     }
-    const result = authors.filter(author => `${author.firstName} ${author.lastName}` === articleAuthor);
+    return authors;
+}
 
-    const authorFound = result.length > 0;
-    if (authorFound) {
-        return result[0]
+function matchAuthor(authors) {
+
+    const articleAuthors = getArticleAuthors();
+    const masterDataAuthors = [];
+
+    for (let i = 0; i < articleAuthors.length; i++) {
+        const currentAuthor = articleAuthors[i];
+        const masterDataAuthor = authors.filter(author => `${author.firstName} ${author.lastName}` === currentAuthor);
+        if (masterDataAuthor[0]) {
+            masterDataAuthors.push(masterDataAuthor[0]);
+        }
+    }
+
+    if (masterDataAuthors.length > 0) {
+        return masterDataAuthors;
     } else {
         DEBUG ? console.group('save new Author') : undefined
-        DEBUG ? console.log('author: ', articleAuthor) : undefined
+        DEBUG ? console.log('author: ', articleAuthors[0]) : undefined
         DEBUG ? console.groupEnd() : undefined
 
-        browser.runtime.sendMessage({action: "addAuthor", host: window.location.host, author: articleAuthor});
+        browser.runtime.sendMessage({action: "addAuthor", host: window.location.host, author: articleAuthors[0]});
     }
 }
 
 function isDetailPage() {
-
     const impressum = window.location.pathname.includes("impressum");
     const detailPage = SLUG_REGEX.test(window.location.pathname);
     DEBUG ? console.log("detail page", detailPage) : undefined
@@ -88,30 +115,64 @@ function isDetailPage() {
 function addAuthorPhoto(authors) {
     DEBUG ? console.log('update DOM') : undefined;
     DEBUG ? console.log('authors', authors) : undefined;
-    console.log("here")
-    const articleAuthor = matchAuthor(authors)
-    DEBUG ? console.log('articleAuthor', articleAuthor) : undefined;
 
-    // Author image
-    const authorPhoto = getAuthorPhotoElement(articleAuthor.photo);
-    DEBUG ? console.log('authorPhoto', authorPhoto) : undefined;
-    console.log(authorPhoto)
-    // Author Link
-    const authorLinkWithImage = getAuthorLinkElement(articleAuthor.photo, "", "_blank");
-    authorLinkWithImage.appendChild(authorPhoto);
-    DEBUG ? console.log('authorLinkWithImage', authorLinkWithImage) : undefined;
+    const articleAuthors = matchAuthor(authors)
 
-    // update DOM insert before author name
-    const authorNameLink = getAuthorLinkElement(articleAuthor.about, "", "");
-    const authorNameElement = document.getElementsByClassName("metainfo__item--author")[0]
-    DEBUG ? console.log("authorNameElement ", authorNameElement) : undefined;
-    const authorNameClone = authorNameElement.cloneNode(true);
-    DEBUG ? console.log("authorNameClone ", authorNameElement) : undefined;
-    authorNameLink.appendChild(authorNameClone);
-    authorNameElement.replaceWith(authorNameLink);
+    DEBUG ? console.log('articleAuthor', articleAuthors) : undefined;
+    let authorDomElement;
+    if (articleAuthors.length > 1) {
+        let wrapperDiv = document.createElement("div");
+        for (let i = 0; i < articleAuthors.length; i++) {
+            let authorDiv = document.createElement("div");
+            authorDiv.setAttribute("style","float: left;")
+
+            let authorAnchor = document.createElement("a");
+            authorAnchor.target = "_blank"
+            authorAnchor.href = articleAuthors[i].photo;
+            authorAnchor.setAttribute("style", "background-image: none; text-decoration:none;");
+
+            let imgAuthor = getAuthorPhotoElement(articleAuthors[i].photo)
+            authorAnchor.appendChild(imgAuthor);
+            authorDiv.appendChild(authorAnchor)
+
+
+            let authorNameSpan = document.createElement("span");
+            let authorLink = document.createElement("a");
+            authorLink.href = articleAuthors[i].about;
+            authorLink.text = `${articleAuthors[i].firstName} ${articleAuthors[i].lastName}`;
+            authorNameSpan.appendChild(authorLink)
+            authorDiv.appendChild(document.createElement("br"))
+            authorDiv.appendChild(authorNameSpan)
+
+            wrapperDiv.appendChild(authorDiv);
+        }
+        authorDomElement = wrapperDiv;
+    } else {
+        const articleAuthor = articleAuthors[0];
+
+        // Author image
+        const authorPhoto = getAuthorPhotoElement(articleAuthor.photo);
+        DEBUG ? console.log('authorPhoto', authorPhoto) : undefined;
+
+        // Author Link
+        const authorLinkWithImage = getAuthorLinkElement(articleAuthor.photo, "", "_blank");
+        authorLinkWithImage.appendChild(authorPhoto);
+        DEBUG ? console.log('authorLinkWithImage', authorLinkWithImage) : undefined;
+
+        // update DOM insert before author name
+        const authorNameLink = getAuthorLinkElement(articleAuthor.about, "", "");
+        const authorNameElement = document.getElementsByClassName("metainfo__item--author")[0]
+        DEBUG ? console.log("authorNameElement ", authorNameElement) : undefined;
+        const authorNameClone = authorNameElement.cloneNode(true);
+        DEBUG ? console.log("authorNameClone ", authorNameElement) : undefined;
+        authorNameLink.appendChild(authorNameClone);
+        authorNameElement.replaceWith(authorNameLink);
+
+        authorDomElement = authorLinkWithImage;
+    }
 
     if (isDetailPage()) {
         const authorElement = document.getElementsByClassName("metainfo--content")[0]
-        authorElement.insertBefore(authorLinkWithImage, authorElement.firstChild);
+        authorElement.insertBefore(authorDomElement, authorElement.firstChild);
     }
 }
