@@ -88,14 +88,14 @@ function isDetailPage() {
 function addAuthorPhoto(authors) {
     DEBUG ? console.log('update DOM') : undefined;
     DEBUG ? console.log('authors', authors) : undefined;
-
+    console.log("here")
     const articleAuthor = matchAuthor(authors)
     DEBUG ? console.log('articleAuthor', articleAuthor) : undefined;
 
     // Author image
     const authorPhoto = getAuthorPhotoElement(articleAuthor.photo);
     DEBUG ? console.log('authorPhoto', authorPhoto) : undefined;
-
+    console.log(authorPhoto)
     // Author Link
     const authorLinkWithImage = getAuthorLinkElement(articleAuthor.photo, "", "_blank");
     authorLinkWithImage.appendChild(authorPhoto);
