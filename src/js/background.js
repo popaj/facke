@@ -54,19 +54,23 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         DEBUG ? console.log("> message", message) : undefined;
 
         const host = removeWWW(message.host);
-        const localStorageAuthors = await getFromLocalStorage(host);
-        DEBUG ? console.group("localStorageAuthors", localStorageAuthors) : undefined
-        DEBUG ? console.group("localStorageAuthors.length", localStorageAuthors.length) : undefined
+        let localStorageAuthors = await getFromLocalStorage(host);
+        localStorageAuthors = JSON.parse(localStorageAuthors[host]);
+        DEBUG ? console.log("localStorageAuthors", localStorageAuthors) : undefined
+        DEBUG ? console.log("localStorageAuthors.length", localStorageAuthors.length) : undefined
         const newAuthor = new AuthorBuilder()
             .setFirstName(message.author)
             .setLastName(message.author)
             .build();
-        const authorUpdated = localStorageAuthors.add(newAuthor)
-        DEBUG ? console.group("authorUpdated", authorUpdated) : undefined
-        DEBUG ? console.group("authorUpdated.length", authorUpdated.length) : undefined
+        DEBUG ? console.log("Before authorUpdated", localStorageAuthors) : undefined
+        DEBUG ? console.log("Before authorUpdated.length", localStorageAuthors.length) : undefined
+        localStorageAuthors.push(newAuthor)
+        DEBUG ? console.log("After authorUpdated", localStorageAuthors) : undefined
+        DEBUG ? console.log("After authorUpdated.length", localStorageAuthors.length) : undefined
+        DEBUG ? console.groupEnd() : undefined
 
-        await saveToLocalStorage(host, authorUpdated)
-        transferToContent("addAuthor", authorUpdated)
+        await saveToLocalStorage(host, localStorageAuthors)
+        transferToContent("addAuthor", localStorageAuthors)
     } else if (message.action === "getAuthors") {
 
         DEBUG ? console.group("getAuthors") : undefined
