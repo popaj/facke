@@ -1,0 +1,39 @@
+{
+  "manifest_version": 2,
+  "name": "Facke",
+  "short_name": "Facke",
+  "version": "0.0.1",
+  "description": "Adds a photo of the author.",
+  "icons": {
+    "48": "src/asset/icon/icon-32.png"
+  },
+  "background": {
+    "scripts": [
+      "src/js/background.js"
+    ],
+    "persistent": false,
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.nzz.ch/*"
+      ],
+      "js": [
+        "src/js/content.js"
+      ]
+    }
+  ],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "cookies",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+  "web_accessible_resources": [
+    "src/assets/photo/*",
+    "src/js/json/*.json"
+  ]
+}
