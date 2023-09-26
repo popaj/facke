@@ -1,7 +1,7 @@
 'use strict';
 
 const SLUG_REGEX = /\/+[a-z0-9-]+\.\d+/;
-const DEBUG = true;
+const DEBUG = false;
 const SPACE = " ";
 const COMMA = ",";
 const DEFAULT_AUTHOR_PHOTO = browser.runtime.getURL("src/asset/photo/default.jpg");
@@ -62,13 +62,24 @@ function getAuthorPhotoElement(imgSrc) {
     return img;
 }
 
+function cleanUpAuthorName(authorName) {
+    let cleanAuthorName = authorName.trim();
+
+    if (cleanAuthorName.includes("(")) {
+        const substringStartIdx = cleanAuthorName.indexOf("(") - 1;
+        cleanAuthorName = cleanAuthorName.substring(0, substringStartIdx);
+    }
+
+    return cleanAuthorName;
+}
+
 function getArticleAuthors() {
     let authors = []
     let articleAuthors = document.querySelector("span.metainfo__item--author").textContent
     if (articleAuthors.includes(COMMA)) {
         const authorParts = articleAuthors.split(COMMA)
         for (let i = 0; i < authorParts.length; i++) {
-            const currentAuthor = authorParts[i].trim();
+            const currentAuthor = cleanUpAuthorName(authorParts[i]);
             const isName = currentAuthor.includes(SPACE);
             if (isName) {
                 authors.push(currentAuthor);
@@ -120,56 +131,35 @@ function addAuthorPhoto(authors) {
 
     DEBUG ? console.log('articleAuthor', articleAuthors) : undefined;
     let authorDomElement;
-    if (articleAuthors.length > 1) {
-        let wrapperDiv = document.createElement("div");
-        for (let i = 0; i < articleAuthors.length; i++) {
-            let authorDiv = document.createElement("div");
-            authorDiv.setAttribute("style","float: left;")
+    let wrapperDiv = document.createElement("div");
+    for (let i = 0; i < articleAuthors.length; i++) {
+        let authorDiv = document.createElement("div");
+        authorDiv.setAttribute("style", "float: left;")
 
-            let authorAnchor = document.createElement("a");
-            authorAnchor.target = "_blank"
-            authorAnchor.href = articleAuthors[i].photo;
-            authorAnchor.setAttribute("style", "background-image: none; text-decoration:none;");
+        let authorAnchor = document.createElement("a");
+        authorAnchor.target = "_blank"
+        authorAnchor.href = articleAuthors[i].photo;
+        authorAnchor.setAttribute("style", "background-image: none; text-decoration:none;");
 
-            let imgAuthor = getAuthorPhotoElement(articleAuthors[i].photo)
-            authorAnchor.appendChild(imgAuthor);
-            authorDiv.appendChild(authorAnchor)
+        let imgAuthor = getAuthorPhotoElement(articleAuthors[i].photo)
+        authorAnchor.appendChild(imgAuthor);
+        authorDiv.appendChild(authorAnchor)
 
+        let authorNameSpan = document.createElement("span");
+        authorNameSpan.setAttribute("class", "metainfo__item--author");
 
-            let authorNameSpan = document.createElement("span");
-            let authorLink = document.createElement("a");
-            authorLink.href = articleAuthors[i].about;
-            authorLink.text = `${articleAuthors[i].firstName} ${articleAuthors[i].lastName}`;
-            authorNameSpan.appendChild(authorLink)
-            authorDiv.appendChild(document.createElement("br"))
-            authorDiv.appendChild(authorNameSpan)
+        let authorLink = document.createElement("a");
+        authorLink.href = articleAuthors[i].about;
+        authorLink.text = `${articleAuthors[i].firstName} ${articleAuthors[i].lastName}`;
+        authorLink.setAttribute("style", "background-image:none; text-decoration:none;");
+        authorNameSpan.appendChild(authorLink)
+        authorDiv.appendChild(document.createElement("br"))
+        authorDiv.appendChild(authorNameSpan)
 
-            wrapperDiv.appendChild(authorDiv);
-        }
-        authorDomElement = wrapperDiv;
-    } else {
-        const articleAuthor = articleAuthors[0];
-
-        // Author image
-        const authorPhoto = getAuthorPhotoElement(articleAuthor.photo);
-        DEBUG ? console.log('authorPhoto', authorPhoto) : undefined;
-
-        // Author Link
-        const authorLinkWithImage = getAuthorLinkElement(articleAuthor.photo, "", "_blank");
-        authorLinkWithImage.appendChild(authorPhoto);
-        DEBUG ? console.log('authorLinkWithImage', authorLinkWithImage) : undefined;
-
-        // update DOM insert before author name
-        const authorNameLink = getAuthorLinkElement(articleAuthor.about, "", "");
-        const authorNameElement = document.getElementsByClassName("metainfo__item--author")[0]
-        DEBUG ? console.log("authorNameElement ", authorNameElement) : undefined;
-        const authorNameClone = authorNameElement.cloneNode(true);
-        DEBUG ? console.log("authorNameClone ", authorNameElement) : undefined;
-        authorNameLink.appendChild(authorNameClone);
-        authorNameElement.replaceWith(authorNameLink);
-
-        authorDomElement = authorLinkWithImage;
+        wrapperDiv.appendChild(authorDiv);
     }
+    document.querySelector("span.metainfo__item").remove();
+    authorDomElement = wrapperDiv;
 
     if (isDetailPage()) {
         const authorElement = document.getElementsByClassName("metainfo--content")[0]
