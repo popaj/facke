@@ -4,6 +4,7 @@ const SLUG_REGEX = /\/+[a-z0-9-]+\.\d+/;
 const DEBUG = false;
 const SPACE = " ";
 const COMMA = ",";
+const UND  = " und ";
 const DEFAULT_AUTHOR_PHOTO = browser.runtime.getURL("src/asset/photo/default.jpg");
 
 // SENDER
@@ -73,19 +74,28 @@ function cleanUpAuthorName(authorName) {
     return cleanAuthorName;
 }
 
+function extractArticleAuthors(articleAuthors, separator){
+    let authors = [];
+    const authorParts = articleAuthors.split(separator)
+    for (let i = 0; i < authorParts.length; i++) {
+        const currentAuthor = cleanUpAuthorName(authorParts[i]);
+        const isName = currentAuthor.includes(SPACE);
+        if (isName) {
+            authors.push(currentAuthor);
+        }
+    }
+    return authors;
+}
+
 function getArticleAuthors() {
     let authors = []
     let articleAuthors = document.querySelector("span.metainfo__item--author").textContent
     if (articleAuthors.includes(COMMA)) {
-        const authorParts = articleAuthors.split(COMMA)
-        for (let i = 0; i < authorParts.length; i++) {
-            const currentAuthor = cleanUpAuthorName(authorParts[i]);
-            const isName = currentAuthor.includes(SPACE);
-            if (isName) {
-                authors.push(currentAuthor);
-            }
-        }
-    } else {
+        authors = extractArticleAuthors(articleAuthors, COMMA);
+    } else if(articleAuthors.includes(UND)){
+        authors = extractArticleAuthors(articleAuthors, UND);
+    }
+    else {
         // single author
         authors.push(articleAuthors);
     }
