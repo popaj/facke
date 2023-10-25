@@ -7,6 +7,9 @@ const COMMA = ",";
 const UND = " und ";
 const DEFAULT_AUTHOR_PHOTO = browser.runtime.getURL("src/asset/photo/default.jpg");
 
+// City names that can be detected as authors
+const CITIES = ["San Francisco", "Rio de Janeiro"]
+
 // SENDER
 browser.runtime.sendMessage({action: "getAuthors", host: window.location.host}, (response) => {
     console.log('start')
@@ -80,7 +83,8 @@ function extractArticleAuthors(articleAuthors, separator) {
     for (let i = 0; i < authorParts.length; i++) {
         const currentAuthor = cleanUpAuthorName(authorParts[i]);
         const isName = currentAuthor.includes(SPACE);
-        if (isName) {
+        const isCityName = CITIES.includes(currentAuthor);
+        if (isName && !isCityName) {
             authors.push(currentAuthor);
         }
     }
