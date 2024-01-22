@@ -140,7 +140,10 @@ function addAuthorPhoto(authors) {
     DEBUG && console.log('update DOM');
     DEBUG && console.log('authors', authors);
 
-    const articleAuthors = matchAuthor(authors)
+    const articleAuthors = matchAuthor(authors);
+    if (!articleAuthors.length) {
+        return;
+    }
 
     DEBUG && console.log('update DOM');
     let authorDomElement;
