@@ -150,19 +150,18 @@ function addAuthorPhoto(authors) {
     }
 
     DEBUG && console.log('update DOM');
-    let authorDomElement;
     let wrapperDiv = document.createElement("div");
-    for (let i = 0; i < articleAuthors.length; i++) {
+    articleAuthors.forEach(author => {
         let authorDiv = document.createElement("div");
         authorDiv.style.float = "left";
 
         let authorAnchor = document.createElement("a");
         authorAnchor.target = "_blank"
-        authorAnchor.href = articleAuthors[i].photo;
+        authorAnchor.href = author.photo;
         authorAnchor.style.backgroundImage = "none";
         authorAnchor.style.textDecoration = "none";
 
-        let imgAuthor = getAuthorPhotoElement(articleAuthors[i].photo)
+        let imgAuthor = getAuthorPhotoElement(author.photo)
         authorAnchor.appendChild(imgAuthor);
         authorDiv.appendChild(authorAnchor)
 
@@ -170,8 +169,8 @@ function addAuthorPhoto(authors) {
         authorNameSpan.className = "metainfo__item--author";
 
         let authorLink = document.createElement("a");
-        authorLink.href = articleAuthors[i].about;
-        authorLink.text = `${articleAuthors[i].firstName} ${articleAuthors[i].lastName}`;
+        authorLink.href = author.about;
+        authorLink.text = `${author.firstName} ${author.lastName}`;
         authorLink.style.backgroundImage = "none";
         authorLink.style.textDecoration = "none";
 
@@ -180,12 +179,15 @@ function addAuthorPhoto(authors) {
         authorDiv.appendChild(authorNameSpan)
 
         wrapperDiv.appendChild(authorDiv);
+    });
+
+    const metainfoElement = document.querySelector("span.metainfo__item");
+    if (metainfoElement) {
+        metainfoElement.remove();
     }
-    document.querySelector("span.metainfo__item").remove();
-    authorDomElement = wrapperDiv;
 
     if (isDetailPage()) {
         const authorElement = document.getElementsByClassName("metainfo--content")[0]
-        authorElement.insertBefore(authorDomElement, authorElement.firstChild);
+        authorElement.insertBefore(wrapperDiv, authorElement.firstChild);
     }
 }
