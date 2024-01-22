@@ -46,36 +46,36 @@ function transferToContent(action, payload) {
 }
 
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-    DEBUG ? console.log("... receiving ...") : undefined;
+    DEBUG && console.log("... receiving ...");
 
     if (message.action === "addAuthor" && message.author) {
 
-        DEBUG ? console.group("addAuthor") : undefined
-        DEBUG ? console.log("> message", message) : undefined;
+        DEBUG && console.group("addAuthor");
+        DEBUG && console.log("> message", message);
 
         const host = removeWWW(message.host);
         let localStorageAuthors = await getFromLocalStorage(host);
         localStorageAuthors = JSON.parse(localStorageAuthors[host]);
-        DEBUG ? console.log("localStorageAuthors", localStorageAuthors) : undefined
-        DEBUG ? console.log("localStorageAuthors.length", localStorageAuthors.length) : undefined
+        DEBUG && console.log("localStorageAuthors", localStorageAuthors);
+        DEBUG && console.log("localStorageAuthors.length", localStorageAuthors.length);
         const newAuthor = new AuthorBuilder()
             .setFirstName(message.author)
             .setLastName(message.author)
             .build();
-        DEBUG ? console.log("Before authorUpdated", localStorageAuthors) : undefined
-        DEBUG ? console.log("Before authorUpdated.length", localStorageAuthors.length) : undefined
+        DEBUG && console.log("Before authorUpdated", localStorageAuthors);
+        DEBUG && console.log("Before authorUpdated.length", localStorageAuthors.length);
         localStorageAuthors.push(newAuthor)
-        DEBUG ? console.log("After authorUpdated", localStorageAuthors) : undefined
-        DEBUG ? console.log("After authorUpdated.length", localStorageAuthors.length) : undefined
-        DEBUG ? console.groupEnd() : undefined
+        DEBUG && console.log("After authorUpdated", localStorageAuthors);
+        DEBUG && console.log("After authorUpdated.length", localStorageAuthors.length);
+        DEBUG && console.groupEnd();
 
         await saveToLocalStorage(host, localStorageAuthors)
         transferToContent("addAuthor", localStorageAuthors)
     } else if (message.action === "getAuthors") {
 
-        DEBUG ? console.group("getAuthors") : undefined
-        DEBUG ? console.log("> message", message) : undefined;
-        DEBUG ? console.groupEnd() : undefined;
+        DEBUG && console.group("getAuthors");
+        DEBUG && console.log("> message", message);
+        DEBUG && console.groupEnd();
 
         let host = removeWWW(message.host);
         try {
@@ -85,20 +85,20 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             let globalData;
             if (payload && payload.length > 0) {
 
-                DEBUG ? console.group("from localStorage") : undefined
-                DEBUG ? console.log("> localStorage", localStorageAuthors) : undefined;
-                DEBUG ? console.log("> payload", payload) : undefined;
-                DEBUG ? console.groupEnd() : undefined
+                DEBUG && console.group("from localStorage");
+                DEBUG && console.log("> localStorage", localStorageAuthors);
+                DEBUG && console.log("> payload", payload);
+                DEBUG && console.groupEnd();
 
                 transferToContent("getAuthors", payload)
             } else {
-                DEBUG ? console.group("from file") : undefined
+                DEBUG && console.group("from file");
 
                 const jsonFileName = hostToAuthorsMap[host];
                 const jsonFileURL = browser.runtime.getURL(ABSOLUTE_PATH_PREFIX + SLASH + jsonFileName);
 
-                DEBUG ? console.log("> jsonFileName", jsonFileName) : undefined;
-                DEBUG ? console.log("> jsonFileURL", jsonFileURL) : undefined;
+                DEBUG && console.log("> jsonFileName", jsonFileName);
+                DEBUG && console.log("> jsonFileURL", jsonFileURL);
 
                 await fetch(jsonFileURL)
                     .then(response => response.json())
@@ -106,13 +106,13 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                         // Transfer to Content
                         globalData = data;
 
-                        DEBUG ? console.log('data', data) : undefined
+                        DEBUG && console.log('data', data);
 
                         transferToContent("getAuthors", data)
                     })
                     .catch(error => console.error('Error reading authors.json:', error));
                 await saveToLocalStorage(host, globalData)
-                DEBUG ? console.groupEnd() : undefined
+                DEBUG && console.groupEnd();
             }
 
         } catch (error) {

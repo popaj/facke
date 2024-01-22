@@ -13,13 +13,13 @@ const CITIES = ["San Francisco", "Rio de Janeiro"]
 // SENDER
 browser.runtime.sendMessage({action: "getAuthors", host: window.location.host}, (response) => {
     console.log('start')
-    DEBUG ? console.group("··•••··· seinding ··•••···") : undefined;
-    DEBUG ? console.log("host", window.location.host) : undefined;
-    DEBUG ? console.groupEnd() : undefined;
+    DEBUG && console.group("··•••··· seinding ··•••···");
+    DEBUG && console.log("host", window.location.host);
+    DEBUG && console.groupEnd();
 
     if (response && response.data) {
         const dataReceived = response.data;
-        DEBUG ? console.log("Received information from background script:", dataReceived) : undefined;
+        DEBUG && console.log("Received information from background script:", dataReceived);
     }
 });
 
@@ -28,10 +28,10 @@ browser.runtime.onMessage.addListener((message) => {
 
     const payload = typeof message.data === "string" ? JSON.parse(message.data) : message.data;
 
-    DEBUG ? console.group("··•••··· receiving ··•••···") : undefined;
-    DEBUG ? console.log('message', message) : undefined;
-    DEBUG ? console.log('action', message.action) : undefined;
-    DEBUG ? console.log('payload', message.data) : undefined;
+    DEBUG && console.group("··•••··· receiving ··•••···");
+    DEBUG && console.log('message', message);
+    DEBUG && console.log('action', message.action);
+    DEBUG && console.log('payload', message.data);
 
     if (message.action === 'getAuthors') {
         addAuthorPhoto(payload)
@@ -39,7 +39,7 @@ browser.runtime.onMessage.addListener((message) => {
         addAuthorPhoto(payload)
     }
 
-    DEBUG ? console.groupEnd() : undefined;
+    DEBUG && console.groupEnd();
 });
 
 function getAuthorLinkElement(href, linkText, target) {
@@ -121,9 +121,9 @@ function matchAuthor(authors) {
     if (masterDataAuthors.length > 0) {
         return masterDataAuthors;
     } else {
-        DEBUG ? console.group('save new Author') : undefined
-        DEBUG ? console.log('author: ', articleAuthors[0]) : undefined
-        DEBUG ? console.groupEnd() : undefined
+        DEBUG && console.group('save new Author');
+        DEBUG && console.log('author: ', articleAuthors[0]);
+        DEBUG && console.groupEnd();
 
         browser.runtime.sendMessage({action: "addAuthor", host: window.location.host, author: articleAuthors[0]});
     }
@@ -132,17 +132,17 @@ function matchAuthor(authors) {
 function isDetailPage() {
     const impressum = window.location.pathname.includes("impressum");
     const detailPage = SLUG_REGEX.test(window.location.pathname);
-    DEBUG ? console.log("detail page", detailPage) : undefined
+    DEBUG && console.log("detail page", detailPage);
     return detailPage && !impressum;
 }
 
 function addAuthorPhoto(authors) {
-    DEBUG ? console.log('update DOM') : undefined;
-    DEBUG ? console.log('authors', authors) : undefined;
+    DEBUG && console.log('update DOM');
+    DEBUG && console.log('authors', authors);
 
     const articleAuthors = matchAuthor(authors)
 
-    DEBUG ? console.log('articleAuthor', articleAuthors) : undefined;
+    DEBUG && console.log('update DOM');
     let authorDomElement;
     let wrapperDiv = document.createElement("div");
     for (let i = 0; i < articleAuthors.length; i++) {
