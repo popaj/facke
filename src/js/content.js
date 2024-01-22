@@ -156,27 +156,27 @@ function addAuthorPhoto(authors) {
         authorDiv.style.float = "left";
 
         let authorAnchor = document.createElement("a");
-        authorAnchor.target = "_blank"
+        authorAnchor.target = "_blank";
         authorAnchor.href = author.photo;
         authorAnchor.style.backgroundImage = "none";
         authorAnchor.style.textDecoration = "none";
 
-        let imgAuthor = getAuthorPhotoElement(author.photo)
+        let imgAuthor = getAuthorPhotoElement(author.photo);
         authorAnchor.appendChild(imgAuthor);
-        authorDiv.appendChild(authorAnchor)
+        authorDiv.appendChild(authorAnchor);
 
         let authorNameSpan = document.createElement("span");
         authorNameSpan.className = "metainfo__item--author";
 
         let authorLink = document.createElement("a");
         authorLink.href = author.about;
-        authorLink.text = `${author.firstName} ${author.lastName}`;
+        authorLink.textContent = `${author.firstName} ${author.lastName}`;
         authorLink.style.backgroundImage = "none";
         authorLink.style.textDecoration = "none";
 
-        authorNameSpan.appendChild(authorLink)
-        authorDiv.appendChild(document.createElement("br"))
-        authorDiv.appendChild(authorNameSpan)
+        authorNameSpan.appendChild(authorLink);
+        authorDiv.appendChild(document.createElement("br"));
+        authorDiv.appendChild(authorNameSpan);
 
         wrapperDiv.appendChild(authorDiv);
     });
@@ -187,7 +187,7 @@ function addAuthorPhoto(authors) {
     }
 
     if (isDetailPage()) {
-        const authorElement = document.getElementsByClassName("metainfo--content")[0]
+        const authorElement = document.getElementsByClassName("metainfo--content")[0];
         authorElement.insertBefore(wrapperDiv, authorElement.firstChild);
     }
 }

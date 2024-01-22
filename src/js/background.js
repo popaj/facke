@@ -35,7 +35,7 @@ async function saveToLocalStorage(host, data) {
 }
 
 function removeWWW(host) {
-    return host.startsWith("www.") ? host.substring(4, host.length) : host
+    return host.startsWith("www.") ? host.substring(4, host.length) : host;
 }
 
 function transferToContent(action, payload) {
@@ -64,13 +64,13 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             .build();
         DEBUG && console.log("Before authorUpdated", localStorageAuthors);
         DEBUG && console.log("Before authorUpdated.length", localStorageAuthors.length);
-        localStorageAuthors.push(newAuthor)
+        localStorageAuthors.push(newAuthor);
         DEBUG && console.log("After authorUpdated", localStorageAuthors);
         DEBUG && console.log("After authorUpdated.length", localStorageAuthors.length);
         DEBUG && console.groupEnd();
 
-        await saveToLocalStorage(host, localStorageAuthors)
-        transferToContent("addAuthor", localStorageAuthors)
+        await saveToLocalStorage(host, localStorageAuthors);
+        transferToContent("addAuthor", localStorageAuthors);
     } else if (message.action === "getAuthors") {
 
         DEBUG && console.group("getAuthors");
@@ -90,7 +90,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                 DEBUG && console.log("> payload", payload);
                 DEBUG && console.groupEnd();
 
-                transferToContent("getAuthors", payload)
+                transferToContent("getAuthors", payload);
             } else {
                 DEBUG && console.group("from file");
 
@@ -105,13 +105,11 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
                     .then(data => {
                         // Transfer to Content
                         globalData = data;
-
                         DEBUG && console.log('data', data);
-
-                        transferToContent("getAuthors", data)
+                        transferToContent("getAuthors", data);
                     })
                     .catch(error => console.error('Error reading authors.json:', error));
-                await saveToLocalStorage(host, globalData)
+                await saveToLocalStorage(host, globalData);
                 DEBUG && console.groupEnd();
             }
 
