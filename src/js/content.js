@@ -45,7 +45,8 @@ browser.runtime.onMessage.addListener((message) => {
 function getAuthorLinkElement(href, linkText, target) {
     let authorLink = document.createElement("a");
     authorLink.href = href;
-    authorLink.setAttribute("style", "background-image: none; text-decoration:none;");
+    authorLink.style.backgroundImage = "none";
+    authorLink.style.textDecoration = "none";
     if (linkText !== "") {
         authorLink.text = linkText;
     }
@@ -62,7 +63,10 @@ function getAuthorPhotoElement(imgSrc) {
     } else {
         img.src = DEFAULT_AUTHOR_PHOTO
     }
-    img.setAttribute("style", "object-fit: cover; width: 100px; height: 100px; border-radius: 50px;");
+    img.style.objectFit = "cover";
+    img.style.width = "100px";
+    img.style.height = "100px";
+    img.style.borderRadius = "50px";
     return img;
 }
 
@@ -150,24 +154,27 @@ function addAuthorPhoto(authors) {
     let wrapperDiv = document.createElement("div");
     for (let i = 0; i < articleAuthors.length; i++) {
         let authorDiv = document.createElement("div");
-        authorDiv.setAttribute("style", "float: left;")
+        authorDiv.style.float = "left";
 
         let authorAnchor = document.createElement("a");
         authorAnchor.target = "_blank"
         authorAnchor.href = articleAuthors[i].photo;
-        authorAnchor.setAttribute("style", "background-image: none; text-decoration:none;");
+        authorAnchor.style.backgroundImage = "none";
+        authorAnchor.style.textDecoration = "none";
 
         let imgAuthor = getAuthorPhotoElement(articleAuthors[i].photo)
         authorAnchor.appendChild(imgAuthor);
         authorDiv.appendChild(authorAnchor)
 
         let authorNameSpan = document.createElement("span");
-        authorNameSpan.setAttribute("class", "metainfo__item--author");
+        authorNameSpan.className = "metainfo__item--author";
 
         let authorLink = document.createElement("a");
         authorLink.href = articleAuthors[i].about;
         authorLink.text = `${articleAuthors[i].firstName} ${articleAuthors[i].lastName}`;
-        authorLink.setAttribute("style", "background-image:none; text-decoration:none;");
+        authorLink.style.backgroundImage = "none";
+        authorLink.style.textDecoration = "none";
+
         authorNameSpan.appendChild(authorLink)
         authorDiv.appendChild(document.createElement("br"))
         authorDiv.appendChild(authorNameSpan)
