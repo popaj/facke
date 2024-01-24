@@ -9,28 +9,24 @@ const hostToAuthorsMap = {
 };
 
 async function getFromLocalStorage(host) {
-    return new Promise((resolve, reject) => {
-        browser.storage.local.get(host, function (result) {
-            if (browser.runtime.lastError) {
-                reject(browser.runtime.lastError);
-            } else {
-                resolve(result);
-            }
-        });
-    });
+    try {
+        const result = await browser.storage.local.get(host);
+        return result[host] ? JSON.parse(result[host]) : null;
+    } catch (error) {
+        console.error("Error accessing local storage:", error);
+        return null;
+    }
 }
 
 async function saveToLocalStorage(host, data) {
-    return new Promise((resolve, reject) => {
+    try {
         const jsonData = JSON.stringify(data);
-        browser.storage.local.set({[host]: jsonData}, function () {
-            if (browser.runtime.lastError) {
-                reject(browser.runtime.lastError);
-            } else {
-                resolve(data);
-            }
-        });
-    });
+        await browser.storage.local.set({[host]: jsonData});
+        return data;
+    } catch (error) {
+        console.error(`Error saving data to local storage for ${host}:`, error);
+        throw error; // Rethrow to let the caller handle the error
+    }
 }
 
 async function getAuthorsFromMasterData(host) {
@@ -64,7 +60,7 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
     if (message.action === "addAuthor" && message.author) {
         try {
-            let authors = await getFromLocalStorage(host);
+            let authors = await getFromLocalStorage(host) || [];
             authors = JSON.parse(authors[host]);
             const newAuthor = new AuthorBuilder()
                 .setFirstName(message.author)
@@ -79,10 +75,10 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
         }
     } else if (message.action === "getAuthors") {
         try {
-            let authors = await getFromLocalStorage(host);
+            let authors = await getFromLocalStorage(host) || [];
             authors = authors[host]
             if (!authors) {
-                authors = await getAuthorsFromMasterData(host);
+                authors = await getAuthorsFromMasterData(host) || [];
             }
             transferToContent("getAuthors", authors)
         } catch (error) {
