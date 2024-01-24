@@ -157,7 +157,7 @@ function requestAuthors() {
 
 // RECEIVER, message listener
 browser.runtime.onMessage.addListener((message) => {
-    if (message.action === "getAuthors" && isDetailPage()) {
+    if (isDetailPage()) {
         const payload = typeof message.data === "string" ? JSON.parse(message.data) : message.data;
         addAuthorPhoto(payload)
     }
