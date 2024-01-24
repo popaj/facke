@@ -11,7 +11,7 @@ const hostToAuthorsMap = {
 async function getFromLocalStorage(host) {
     try {
         const result = await browser.storage.local.get(host);
-        return result[host] ? JSON.parse(result[host]) : null;
+        return result[host] ? JSON.parse(result[host]) : [];
     } catch (error) {
         console.error("Error accessing local storage:", error);
         return null;
