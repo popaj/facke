@@ -10,33 +10,6 @@ const DEFAULT_AUTHOR_PHOTO = browser.runtime.getURL("src/asset/photo/default.jpg
 // City names that can be detected as authors
 const CITIES = ["San Francisco", "Rio de Janeiro"]
 
-// SENDER
-browser.runtime.sendMessage({action: "getAuthors", host: window.location.host}, (response) => {
-    console.log(`start`)
-    DEBUG && console.group(`··•••··· seinding ··•••···`);
-    DEBUG && console.log(`host: ${window.location.host}`);
-    DEBUG && console.groupEnd();
-
-    if (response && response.data) {
-        const dataReceived = response.data;
-        DEBUG && console.log(`Received information from background script: ${dataReceived}`);
-    }
-});
-
-// RECEIVER
-browser.runtime.onMessage.addListener((message) => {
-    const payload = typeof message.data === "string" ? JSON.parse(message.data) : message.data;
-    DEBUG && console.group(`··•••··· receiving ··•••···`);
-    DEBUG && console.log(`message ${message}`);
-    DEBUG && console.log(`action ${message.action}`);
-    DEBUG && console.log(`payload ${message.data}`);
-    DEBUG && console.groupEnd();
-
-    if (message.action === 'getAuthors' || message.action === 'addAuthor') {
-        addAuthorPhoto(payload)
-    }
-});
-
 function getAuthorLinkElement(href, linkText, target) {
     let authorLink = document.createElement("a");
     authorLink.href = href;
@@ -173,8 +146,22 @@ function addAuthorPhoto(authors) {
     const metainfoElement = document.querySelector("span.metainfo__item");
     if (metainfoElement) metainfoElement.remove();
 
-    if (isDetailPage()) {
-        const authorElement = document.getElementsByClassName("metainfo--content")[0];
-        authorElement.insertBefore(wrapperDiv, authorElement.firstChild);
-    }
+    const authorElement = document.getElementsByClassName("metainfo--content")[0];
+    if (authorElement) authorElement.insertBefore(wrapperDiv, authorElement.firstChild);
 }
+
+function requestAuthors() {
+    browser.runtime.sendMessage({action: "getAuthors", host: window.location.host});
+}
+
+// RECEIVER, message listener
+browser.runtime.onMessage.addListener((message) => {
+    if (message.action === "getAuthors" && isDetailPage()) {
+        const payload = typeof message.data === "string" ? JSON.parse(message.data) : message.data;
+        addAuthorPhoto(payload)
+    }
+});
+
+document.readyState === "complete" || document.readyState === "interactive"
+    ? requestAuthors()
+    : document.addEventListener("DOMContentLoaded", requestAuthors);
