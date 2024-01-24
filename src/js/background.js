@@ -1,8 +1,5 @@
 const ABSOLUTE_PATH_PREFIX = "src/js/json/";
-const SLASH = "/";
 import {AuthorBuilder} from './author.mjs';
-
-const DEBUG = false;
 
 const hostToAuthorsMap = {
     "nzz.ch": "nzz.json",
@@ -55,7 +52,7 @@ function transferToContent(action, payload) {
     });
 }
 
-browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener(async (message) => {
     const host = removeWWW(message.host);
 
     if (message.action === "addAuthor" && message.author) {
