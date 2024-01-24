@@ -141,15 +141,11 @@ function isDetailPage() {
 }
 
 function addAuthorPhoto(authors) {
-    DEBUG && console.log('update DOM');
-    DEBUG && console.log('authors', authors);
+    DEBUG && console.log('Updating DOM with authors', authors);
 
     const articleAuthors = matchAuthor(authors);
-    if (!articleAuthors.length) {
-        return;
-    }
+    if (!articleAuthors.length) return;
 
-    DEBUG && console.log('update DOM');
     let wrapperDiv = document.createElement("div");
     articleAuthors.forEach(author => {
         let authorDiv = document.createElement("div");
@@ -158,8 +154,7 @@ function addAuthorPhoto(authors) {
         let authorAnchor = document.createElement("a");
         authorAnchor.target = "_blank";
         authorAnchor.href = author.photo;
-        authorAnchor.style.backgroundImage = "none";
-        authorAnchor.style.textDecoration = "none";
+        authorAnchor.style.cssText = "background-image: none; text-decoration: none;";
 
         let imgAuthor = getAuthorPhotoElement(author.photo);
         authorAnchor.appendChild(imgAuthor);
@@ -171,8 +166,7 @@ function addAuthorPhoto(authors) {
         let authorLink = document.createElement("a");
         authorLink.href = author.about;
         authorLink.textContent = `${author.firstName} ${author.lastName}`;
-        authorLink.style.backgroundImage = "none";
-        authorLink.style.textDecoration = "none";
+        authorLink.style.cssText = "background-image: none; text-decoration: none;";
 
         authorNameSpan.appendChild(authorLink);
         authorDiv.appendChild(document.createElement("br"));
@@ -182,9 +176,7 @@ function addAuthorPhoto(authors) {
     });
 
     const metainfoElement = document.querySelector("span.metainfo__item");
-    if (metainfoElement) {
-        metainfoElement.remove();
-    }
+    if (metainfoElement) metainfoElement.remove();
 
     if (isDetailPage()) {
         const authorElement = document.getElementsByClassName("metainfo--content")[0];
