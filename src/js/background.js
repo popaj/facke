@@ -58,7 +58,6 @@ browser.runtime.onMessage.addListener(async (message) => {
     if (message.action === "addAuthor" && message.author) {
         try {
             let authors = await getFromLocalStorage(host) || [];
-            authors = JSON.parse(authors[host]);
             const newAuthor = new AuthorBuilder()
                 .setFirstName(message.author)
                 .setLastName(message.author)
