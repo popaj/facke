@@ -6,7 +6,6 @@ const DEBUG = false;
 
 const hostToAuthorsMap = {
     "nzz.ch": "nzz.json",
-    "times.com": "times.json",
 };
 
 async function getFromLocalStorage(host) {
@@ -52,8 +51,11 @@ function removeWWW(host) {
 
 function transferToContent(action, payload) {
     browser.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        const activeTab = tabs[0];
-        browser.tabs.sendMessage(activeTab.id, {action: action, data: payload});
+        if (tabs.length > 0 && tabs[0].id) {
+            browser.tabs.sendMessage(tabs[0].id, {action, data: payload}).catch(e => {
+                console.error("Error sending message to content script:", e);
+            });
+        }
     });
 }
 
