@@ -56,7 +56,9 @@ function extractArticleAuthors(articleAuthors, separator) {
         const currentAuthor = cleanUpAuthorName(authorParts[i]);
         const isName = currentAuthor.includes(SPACE);
         const isCityName = CITIES.includes(currentAuthor);
-        if (isName && !isCityName) {
+        // example: https://www.nzz.ch/international/krieg-in-der-ukraine-die-neusten-entwicklungen-ld.1613540
+        const isEditorialArticle = currentAuthor === "NZZ-Redaktion"
+        if (isName && !isCityName && !isEditorialArticle) {
             authors.push(currentAuthor);
         }
     }
@@ -93,18 +95,17 @@ function matchAuthor(authors) {
     if (masterDataAuthors.length > 0) {
         return masterDataAuthors;
     } else {
-        DEBUG && console.group('save new Author');
-        DEBUG && console.log(`author:  ${articleAuthors[0]}`);
-        DEBUG && console.groupEnd();
-
         browser.runtime.sendMessage({action: "addAuthor", host: window.location.host, author: articleAuthors[0]});
     }
 }
 
+// It must be ensured that the functionality only works on pages where an author is stored.
+// Exceptions are the pages where the author is introduced.
+// https://www.nzz.ch/impressum/impressum-ld.148422
+// https://www.nzz.ch/impressum/rahel-zingg-zin-ld.1723835
 function isDetailPage() {
     const impressum = window.location.pathname.includes("impressum");
     const detailPage = SLUG_REGEX.test(window.location.pathname);
-    DEBUG && console.log(`detail page: ${detailPage}`);
     return detailPage && !impressum;
 }
 
