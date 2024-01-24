@@ -12,34 +12,29 @@ const CITIES = ["San Francisco", "Rio de Janeiro"]
 
 // SENDER
 browser.runtime.sendMessage({action: "getAuthors", host: window.location.host}, (response) => {
-    console.log('start')
-    DEBUG && console.group("··•••··· seinding ··•••···");
-    DEBUG && console.log("host", window.location.host);
+    console.log(`start`)
+    DEBUG && console.group(`··•••··· seinding ··•••···`);
+    DEBUG && console.log(`host: ${window.location.host}`);
     DEBUG && console.groupEnd();
 
     if (response && response.data) {
         const dataReceived = response.data;
-        DEBUG && console.log("Received information from background script:", dataReceived);
+        DEBUG && console.log(`Received information from background script: ${dataReceived}`);
     }
 });
 
 // RECEIVER
 browser.runtime.onMessage.addListener((message) => {
-
     const payload = typeof message.data === "string" ? JSON.parse(message.data) : message.data;
+    DEBUG && console.group(`··•••··· receiving ··•••···`);
+    DEBUG && console.log(`message ${message}`);
+    DEBUG && console.log(`action ${message.action}`);
+    DEBUG && console.log(`payload ${message.data}`);
+    DEBUG && console.groupEnd();
 
-    DEBUG && console.group("··•••··· receiving ··•••···");
-    DEBUG && console.log('message', message);
-    DEBUG && console.log('action', message.action);
-    DEBUG && console.log('payload', message.data);
-
-    if (message.action === 'getAuthors') {
-        addAuthorPhoto(payload)
-    } else if (message.action === 'addAuthor') {
+    if (message.action === 'getAuthors' || message.action === 'addAuthor') {
         addAuthorPhoto(payload)
     }
-
-    DEBUG && console.groupEnd();
 });
 
 function getAuthorLinkElement(href, linkText, target) {
@@ -126,7 +121,7 @@ function matchAuthor(authors) {
         return masterDataAuthors;
     } else {
         DEBUG && console.group('save new Author');
-        DEBUG && console.log('author: ', articleAuthors[0]);
+        DEBUG && console.log(`author:  ${articleAuthors[0]}`);
         DEBUG && console.groupEnd();
 
         browser.runtime.sendMessage({action: "addAuthor", host: window.location.host, author: articleAuthors[0]});
@@ -136,12 +131,12 @@ function matchAuthor(authors) {
 function isDetailPage() {
     const impressum = window.location.pathname.includes("impressum");
     const detailPage = SLUG_REGEX.test(window.location.pathname);
-    DEBUG && console.log("detail page", detailPage);
+    DEBUG && console.log(`detail page: ${detailPage}`);
     return detailPage && !impressum;
 }
 
 function addAuthorPhoto(authors) {
-    DEBUG && console.log('Updating DOM with authors', authors);
+    DEBUG && console.log(`Updating DOM with authors: ${authors}`);
 
     const articleAuthors = matchAuthor(authors);
     if (!articleAuthors.length) return;
