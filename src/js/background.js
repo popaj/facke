@@ -41,13 +41,13 @@ async function getAuthorsFromMasterData(host) {
         await saveToLocalStorage(host, authors);
         return authors;
     } catch (error) {
-        console.error("Error in getAuthorsFromMasterData:", error);
+        console.error(`Error fetching authors from master data for ${host}:`, error);
         return [];
     }
 }
 
 function removeWWW(host) {
-    return host.startsWith("www.") ? host.substring(4, host.length) : host;
+    return host.startsWith("www.") ? host.substring(4) : host;
 }
 
 function transferToContent(action, payload) {
@@ -58,9 +58,10 @@ function transferToContent(action, payload) {
 }
 
 browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+    const host = removeWWW(message.host);
+
     if (message.action === "addAuthor" && message.author) {
         try {
-            const host = removeWWW(message.host);
             let authors = await getFromLocalStorage(host);
             authors = JSON.parse(authors[host]);
             const newAuthor = new AuthorBuilder()
@@ -71,21 +72,19 @@ browser.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
             await saveToLocalStorage(host, authors);
             transferToContent("addAuthor", authors);
         } catch (error) {
-            console.error("Error saving new author:", error);
+            console.error("Error processing 'addAuthor' message:", error);
             transferToContent("addAuthor", []);
         }
     } else if (message.action === "getAuthors") {
-        let host = removeWWW(message.host);
         try {
-            const localStorageAuthors = await getFromLocalStorage(host);
-            let authors = localStorageAuthors[host];
+            let authors = await getFromLocalStorage(host);
+            authors = authors[host]
             if (!authors) {
                 authors = await getAuthorsFromMasterData(host);
             }
-            sendResponse({authors});
             transferToContent("getAuthors", authors)
         } catch (error) {
-            console.error("Error retrieving data:", error);
+            console.error("Error processing 'getAuthors' message:", error);
             transferToContent("getAuthors", []);
         }
     }
