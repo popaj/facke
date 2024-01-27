@@ -1,0 +1,117 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+    color: #333;
+}
+
+#authorForm {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+#authorForm input[type="text"],
+#authorForm input[type="url"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding doesn't affect overall width */
+}
+
+#authorForm button {
+    background-color: #0056b3;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#authorForm button:hover {
+    background-color: #004494;
+}
+
+#filterInput {
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+    margin: 20px auto;
+    display: block;
+}
+
+.download-container {
+    text-align: right; /* Align the button to the right or as desired */
+    margin: 10px 0; /* Spacing above and below the button */
+}
+
+#exportButton {
+    padding: 5px 15px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.5;
+    outline: none; /* Remove outline to maintain the sleek look */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions for interactions */
+}
+
+#exportButton:hover,
+#exportButton:focus {
+    background-color: #666; /* Slightly darker on hover/focus for feedback */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover/focus */
+}
+
+#authorsList {
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.authorCard {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer; /* Indicates that the element is clickable */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for visual effects */
+}
+
+.authorCard:hover {
+    background-color: #f0f0f0; /* Slightly changes background color on hover */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+}
+
+.authorCard:active {
+    background-color: #e0e0e0; /* Changes background color when clicked */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Reduces shadow to give a pressed effect */
+}
+
+.authorPhoto {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    margin-right: 15px;
+}
+
+.authorInfo {
+    line-height: 1.4;
+}
+
+.authorName {
+    font-weight: bold;
+}

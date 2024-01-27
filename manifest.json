@@ -26,12 +26,17 @@
   ],
   "permissions": [
     "storage",
+    "downloads",
     "activeTab",
     "cookies",
     "webRequest",
     "webRequestBlocking",
     "<all_urls>"
   ],
+  "options_ui": {
+    "page": "src/ui/options.html",
+    "open_in_tab": false
+  },
   "web_accessible_resources": [
     "src/assets/photo/*",
     "src/js/json/*.json"

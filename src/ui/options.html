@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Authors</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+<input type="text" id="searchBox" placeholder="Search by name...">
+<div class="download-container">
+    <button id="exportButton" aria-label="Export Data">nzz.json</button>
+</div>
+<div id="authorsList"></div>
+<form id="authorForm" style="display:none;">
+    <input type="hidden" id="authorId">
+    <input type="text" id="firstName" placeholder="First Name">
+    <input type="text" id="lastName" placeholder="Last Name">
+    <input type="url" id="photoUrl" placeholder="Photo URL">
+    <input type="url" id="aboutUrl" placeholder="About URL">
+    <input type="text" id="code" placeholder="Code">
+    <!-- extend with additional fields as necessary -->
+    <button type="submit">Save</button>
+</form>
+<script src="options.js"></script>
+</body>
+</html>
