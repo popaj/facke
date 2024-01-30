@@ -18,10 +18,10 @@ Auf dem Screenshot ist ein Beispiel eines [Artikels](https://www.nzz.ch/schweiz/
 
 
 ![Author Image Existing Old](readme/aan_o.png)
-*Vorher: Artikel mit Authoren, mit vorhandenen Fotos.*
+*Vorher: Artikel mit Autoren, mit vorhandenen Fotos.*
 
 ![Author Image Existing New](readme/aan_n.png)
-*Nacher: Artikel mit Authoren. Fotos hinzugefügt*
+*Nacher: Artikel mit Autoren. Fotos hinzugefügt*
 
 ### Fotos unbekannt
 
