@@ -43,8 +43,7 @@
     "<all_urls>"
   ],
   "options_ui": {
-    "page": "src/ui/options.html",
-    "open_in_tab": false
+    "page": "src/ui/options.html"
   },
   "web_accessible_resources": [
     "src/asset/photo/*",
