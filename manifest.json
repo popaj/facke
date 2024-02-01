@@ -11,6 +11,11 @@
     "96": "src/asset/icon/icon-96.png",
     "128": "src/asset/icon/icon-96.png"
   },
+  "applications": {
+    "gecko": {
+      "id": "facke@facke"
+    }
+  },
   "background": {
     "scripts": [
       "src/js/background.js"
