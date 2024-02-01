@@ -1,5 +1,5 @@
 const NZZ_KEY = 'nzz.ch';
-
+const DEFAULT_AUTHOR_PHOTO = browser.runtime.getURL("src/asset/photo/default.jpg");
 let allAuthors = []; // Global array to hold all authors
 
 function exportAuthorsAsJson() {
@@ -93,15 +93,25 @@ function clearAndHideAuthorForm() {
     document.getElementById('authorForm').style.display = 'none';
 }
 
+function sanitizeUrl(url) {
+    const allowedProtocols = ['https:'];
+    const urlObject = new URL(url, window.location.href);
+    if (!allowedProtocols.includes(urlObject.protocol)) {
+        return DEFAULT_AUTHOR_PHOTO;
+    }
+    return url;
+}
+
 function renderAuthors(authors) {
     const authorsList = document.getElementById('authorsList');
     authorsList.innerHTML = ''; // Clear current authors
 
     authors.forEach(author => {
         const authorElement = document.createElement('div');
+        const authorPhotoUrl = sanitizeUrl(author.photo);
         authorElement.className = 'authorCard';
         authorElement.innerHTML = `
-            <img src="${author.photo || 'default_photo_url.jpg'}" class="authorPhoto" alt="Author Photo">
+            <img src="${authorPhotoUrl}" class="authorPhoto" alt="Author Photo">
             <div class="authorInfo">
                 <div class="authorName">${author.firstName} ${author.lastName}</div>
                 <!-- include other fields if necessary -->
