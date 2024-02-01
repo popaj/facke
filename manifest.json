@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Facke",
   "short_name": "Facke",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An NZZ article is provided with a suitable face.",
   "icons": {
     "32": "src/asset/icon/icon-32.png",
@@ -11,7 +11,7 @@
     "96": "src/asset/icon/icon-96.png",
     "128": "src/asset/icon/icon-128.png"
   },
-  "applications": {
+  "browser_specific_settings": {
     "gecko": {
       "id": "facke@facke"
     }
