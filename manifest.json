@@ -9,7 +9,7 @@
     "48": "src/asset/icon/icon-48.png",
     "64": "src/asset/icon/icon-64.png",
     "96": "src/asset/icon/icon-96.png",
-    "128": "src/asset/icon/icon-96.png"
+    "128": "src/asset/icon/icon-128.png"
   },
   "applications": {
     "gecko": {
