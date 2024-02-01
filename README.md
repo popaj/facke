@@ -11,6 +11,10 @@ So findet sich die NZZ in dieser neuen Welt gut zurecht. Ihre Artikel sind ein M
 
 Aus Sicht der NZZ hat sich jedoch nichts geändert. Sie surft weiterhin auf einer Welle nicht existierenden Erfolgs und zeigt mit dem Finger auf die Anderen.
 
+## Download
+
+### Firefox
+Download latest version [facke-facke-v0.0.3.xpi](https://github.com/popaj/facke/raw/master/release/facke-firefox-v0.0.3.xpi)
 
 ## Beispiele
 ### Existierende Fotos
