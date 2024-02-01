@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Facke",
   "short_name": "Facke",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "An NZZ article is provided with a suitable face.",
   "icons": {
     "32": "src/asset/icon/icon-32.png",
