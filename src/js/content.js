@@ -10,18 +10,22 @@ const DEFAULT_AUTHOR_PHOTO = browser.runtime.getURL("src/asset/photo/default.jpg
 // City names that can be detected as authors
 const CITIES = ["San Francisco", "Rio de Janeiro"]
 
-function getAuthorLinkElement(href, linkText, target) {
+function getAuthorDetailLink(author) {
     let authorLink = document.createElement("a");
-    authorLink.href = href;
-    authorLink.style.backgroundImage = "none";
-    authorLink.style.textDecoration = "none";
-    if (linkText !== "") {
-        authorLink.text = linkText;
-    }
-    if (target) {
-        authorLink.target = target;
-    }
+    authorLink.target = "_blank";
+    authorLink.href = author.about;
+    authorLink.textContent = `${author.firstName} ${author.lastName}`;
+    authorLink.style.cssText = "background-image: none; text-decoration: none;";
+
     return authorLink
+}
+
+function getAuthorPhotoLink(authorPhotoUrl) {
+    let anchorElement = document.createElement("a");
+    anchorElement.target = "_blank";
+    anchorElement.href = authorPhotoUrl;
+    anchorElement.style.cssText = "background-image: none; text-decoration: none; display: inline-block;";
+    return anchorElement;
 }
 
 function getAuthorPhotoElement(imgSrc) {
@@ -104,9 +108,9 @@ function matchAuthor(authors) {
 // https://www.nzz.ch/impressum/impressum-ld.148422
 // https://www.nzz.ch/impressum/rahel-zingg-zin-ld.1723835
 function isDetailPage() {
-    const impressum = window.location.pathname.includes("impressum");
+    const imprintPage = window.location.pathname.includes("impressum");
     const detailPage = SLUG_REGEX.test(window.location.pathname);
-    return detailPage && !impressum;
+    return detailPage && !imprintPage;
 }
 
 function addAuthorPhoto(authors) {
@@ -120,24 +124,18 @@ function addAuthorPhoto(authors) {
         let authorDiv = document.createElement("div");
         authorDiv.style.float = "left";
 
-        let authorAnchor = document.createElement("a");
-        authorAnchor.target = "_blank";
-        authorAnchor.href = author.photo;
-        authorAnchor.style.cssText = "background-image: none; text-decoration: none;";
+        let authorPhotoLink = getAuthorPhotoLink(author.photo)
 
         let imgAuthor = getAuthorPhotoElement(author.photo);
-        authorAnchor.appendChild(imgAuthor);
-        authorDiv.appendChild(authorAnchor);
+        authorPhotoLink.appendChild(imgAuthor);
+        authorDiv.appendChild(authorPhotoLink);
 
         let authorNameSpan = document.createElement("span");
         authorNameSpan.className = "metainfo__item--author";
 
-        let authorLink = document.createElement("a");
-        authorLink.href = author.about;
-        authorLink.textContent = `${author.firstName} ${author.lastName}`;
-        authorLink.style.cssText = "background-image: none; text-decoration: none;";
+        let authorDetailLink = getAuthorDetailLink(author);
 
-        authorNameSpan.appendChild(authorLink);
+        authorNameSpan.appendChild(authorDetailLink);
         authorDiv.appendChild(document.createElement("br"));
         authorDiv.appendChild(authorNameSpan);
 
