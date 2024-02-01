@@ -41,7 +41,7 @@
     "open_in_tab": false
   },
   "web_accessible_resources": [
-    "src/assets/photo/*",
+    "src/asset/photo/*",
     "src/js/json/*.json"
   ]
 }
