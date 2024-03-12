@@ -14,7 +14,7 @@ Aus Sicht der NZZ hat sich jedoch nichts geändert. Sie surft weiterhin auf eine
 ## Download
 
 ### Firefox
-Download latest version [facke-facke-v0.0.3.xpi](https://github.com/popaj/facke/raw/master/release/facke-firefox-v0.0.3.xpi)
+Download latest version [facke-v0.0.3.xpi](https://github.com/popaj/facke/raw/master/release/facke-firefox-v0.0.3.xpi)
 
 ## Beispiele
 ### Existierende Fotos
